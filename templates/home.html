@@ -1,14 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Flask App</title>
-</head>
-<body>
-    <h1>Homepage</h1>
-    {% for sensor in sensors %}
-        <p>{{ sensor.sensor_id }}</p>
-        <p>{{ sensor.name}}</p>
-        <p>{{ sensor.description}}</p>
-    {% endfor %}
-</body>
-</html>
+{% extends "layout.html" %}
+{% block content %}
+<h1>Homepage</h1>
+{% for sensor in sensors %}
+    <p>{{ sensor.sensor_id }}</p>
+    <p>{{ sensor.name}}</p>
+    <p>{{ sensor.description}}</p>
+{% endfor %}
+{% endblock content %}
