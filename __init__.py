@@ -1,5 +1,25 @@
 import os
-from flask import Flask
+from flask import Flask, render_template
+
+
+sensors = [
+    {
+        'sensor_id': '1',
+        'name': 'Sensor A',
+        'description': 'Acceleration sensor'
+    },
+    {
+        'sensor_id': '2',
+        'name': 'Sensor B',
+        'description': 'Torque sensor'
+    },
+    {
+        'sensor_id': '3',
+        'name': 'Sensor C',
+        'description': 'Speed sensor'
+    },
+]
+
 
 def create_app(test_config=None):
     # create and configure the app
@@ -22,9 +42,14 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # a simple page that says hello
+    # route to homepage
     @app.route('/')
-    def helloWorld():
-        return 'Hello World!'
+    def home():
+        return render_template('home.html', sensors=sensors)
+    
+    # route to tracking page
+    @app.route('/tracking')
+    def tracking():
+        return render_template('tracking.html')
 
     return app
