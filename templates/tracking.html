@@ -1,7 +1,37 @@
 {% extends "layout.html" %}
 {% block content %}
     <h1>Tracking page</h1>
+    <!-- Table -->
     <table id="table" class="table-dark"></table>
+
+    <!-- Modal -->
+    <div class="modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel" value=""></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <label for="fname">Name</label>
+              <input type="text" id="fname" name="fname"><br><br>
+              <label for="date">Date:</label>
+              <input type="text" id="date" name="date"><br><br>
+              <label for="message">Message</label>
+              <input type="text" id="message" name="message"><br><br>
+              <p style="display:none;" id="rowIdStorage" value=""></p>
+            </form> 
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick=sendTrackingInput() data-dismiss="modal">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script>
         var $table = $('#table')
@@ -76,7 +106,42 @@
       
         function expandTable($detail, index) {
           buildSubTable($detail.html('<table></table>').find('table'), index)
+          $detail.append('<button' + ' data-id=' + index + ' class="btn btn-primary openModal" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-trash"></i> Add</button>')
         }
+
+        //Set modal parameters after Add-Button click based on row index
+        $(document).on("click", ".openModal", function () {
+          var rowIndex = $(this).data('id');
+          sensors = JSON.parse('{{ sensors|tojson }}');
+          sensor_id = sensors[rowIndex].sensor_id
+          $("#rowIdStorage").text( rowIndex );
+          $("#exampleModalLabel").text( "Sensor_ID: " + sensor_id );
+        });
+
+        function sendTrackingInput() {
+          var requestData = {
+                  index: document.getElementById("rowIdStorage").textContent,
+                  name: document.getElementById("fname").value,
+                  date: document.getElementById("date").value,
+                  message: document.getElementById("message").value
+                }
+              const requestOptions = {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(requestData)
+              };
+              fetch(`/addTrackingEntry`, requestOptions)
+              .then(response => {
+                if (response.ok) {
+                  console.log("OK!");
+                } else {
+                  response.text()
+                  .then(data => {
+                    console.log("ERROR!")
+                  })
+                }     
+            })
+          };
 
         $(function() {
           buildTable($table)
