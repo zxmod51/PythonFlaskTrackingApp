@@ -61,9 +61,16 @@
             data: data,
             search: true,
             detailView: true,
+            showRefresh: true,
+            pagination: true,
+            pageSize: 10,
+            pageList: [10,25],
             onExpandRow: function (index, row, $detail) {
               expandTable($detail, index)
             },
+            onRefresh: function () {
+              location.reload()
+            }
           })
         }
 
