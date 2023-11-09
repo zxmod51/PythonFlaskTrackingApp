@@ -30,9 +30,54 @@
             columns: columns,
             data: data,
             search: true,
+            detailView: true,
+            onExpandRow: function (index, row, $detail) {
+              expandTable($detail, index)
+            },
           })
         }
+
+        function buildSubTable($el, index) {
+          var columns = []
+          var dataSensors =  JSON.parse('{{ sensors|tojson }}');
+          
+          columns.push({
+              title: 'name',
+              field: 'name',
+            })
+
+          columns.push({
+              title: 'Date',
+              field: 'date',
+              sortable: 'true',
+            })
+
+          columns.push({
+              title: 'Message',
+              field: 'description',
+            })
+
+          $el.bootstrapTable({
+            columns: columns,
+          })
+
+          for (let i = 0; i < dataSensors[index].tracking.length; i++) {
+
+            $el.bootstrapTable('insertRow', {
+              index: i,
+              row: {
+                name: dataSensors[index].tracking[i].name,
+                date: dataSensors[index].tracking[i].date,
+                description: dataSensors[index].tracking[i].description
+              }
+            })
+          } 
+        }
       
+        function expandTable($detail, index) {
+          buildSubTable($detail.html('<table></table>').find('table'), index)
+        }
+
         $(function() {
           buildTable($table)
         })
