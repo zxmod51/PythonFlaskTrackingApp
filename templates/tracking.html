@@ -1,4 +1,40 @@
 {% extends "layout.html" %}
 {% block content %}
     <h1>Tracking page</h1>
+    <table id="table" class="table-dark"></table>
+
+    <script>
+        var $table = $('#table')
+      
+        function buildTable($el) {
+          var columns = []
+          var data =  JSON.parse('{{ sensors|tojson }}');
+      
+          columns.push({
+              title: 'Sensor_id',
+              field: 'sensor_id',
+            })
+      
+          columns.push({
+              title: 'Name',
+              field: 'name',
+            })
+      
+          columns.push({
+              title: 'Description',
+              field: 'description',
+            })
+      
+          
+          $el.bootstrapTable({
+            columns: columns,
+            data: data,
+            search: true,
+          })
+        }
+      
+        $(function() {
+          buildTable($table)
+        })
+    </script>
 {% endblock content %}
