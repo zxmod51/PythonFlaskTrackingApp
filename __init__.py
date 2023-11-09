@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify
 
 def create_app(test_config=None):
     # create and configure the app
@@ -31,6 +31,18 @@ def create_app(test_config=None):
     @app.route('/tracking')
     def tracking():
         return render_template('tracking.html', sensors=sensors)
+
+    # Endpoint to create a new tracking entry
+    @app.route('/addTrackingEntry', methods=["POST"])
+    def add_TrackingEntry():
+        index = request.json['index']
+        sensors[int(index)]['tracking'].append({
+            "name": request.json['name'],
+            "date": request.json['date'],
+            "description": request.json['message']
+            })
+
+        return "Entry added."
 
     return app
 
